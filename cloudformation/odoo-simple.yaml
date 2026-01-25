@@ -1,15 +1,15 @@
-AWSTemplateFormatVersion: '2010-09-09'
-Description: 'Odoo Community 18 deployment on EC2 t2.micro - Simple and Cost-Effective'
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "Odoo Community 18 deployment on EC2 t2.micro - Simple and Cost-Effective"
 
 Parameters:
   KeyPairName:
     Type: String
-    Description: 'EC2 Key Pair name for SSH access (optional)'
-    Default: ''
+    Description: "EC2 Key Pair name for SSH access (optional)"
+    Default: ""
 
   InstanceType:
     Type: String
-    Description: 'EC2 instance type'
+    Description: "EC2 instance type"
     Default: t2.micro
     AllowedValues:
       - t2.micro
@@ -17,40 +17,40 @@ Parameters:
       - t2.medium
 
 Conditions:
-  HasKeyPair: !Not [!Equals [!Ref KeyPairName, '']]
+  HasKeyPair: !Not [!Equals [!Ref KeyPairName, ""]]
 
 Resources:
   # Security Group cho Odoo
   OdooSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      GroupDescription: 'Security group for Odoo Community 18'
+      GroupDescription: "Security group for Odoo Community 18"
       SecurityGroupIngress:
         - IpProtocol: tcp
           FromPort: 22
           ToPort: 22
           CidrIp: 0.0.0.0/0
-          Description: 'SSH access'
+          Description: "SSH access"
         - IpProtocol: tcp
           FromPort: 80
           ToPort: 80
           CidrIp: 0.0.0.0/0
-          Description: 'HTTP access'
+          Description: "HTTP access"
         - IpProtocol: tcp
           FromPort: 8069
           ToPort: 8069
           CidrIp: 0.0.0.0/0
-          Description: 'Odoo direct access'
+          Description: "Odoo direct access"
       Tags:
         - Key: Name
-          Value: 'OdooSecurityGroup'
+          Value: "OdooSecurityGroup"
 
   # EC2 Instance cho Odoo
   OdooInstance:
     Type: AWS::EC2::Instance
     Properties:
       InstanceType: !Ref InstanceType
-      ImageId: ami-0fa377108253bf620  # Ubuntu 22.04 LTS trong ap-southeast-1
+      ImageId: ami-0fa377108253bf620 # Ubuntu 22.04 LTS trong ap-southeast-1
       KeyName: !If [HasKeyPair, !Ref KeyPairName, !Ref AWS::NoValue]
       SecurityGroupIds:
         - !Ref OdooSecurityGroup
@@ -274,46 +274,48 @@ Resources:
 
       Tags:
         - Key: Name
-          Value: 'Odoo-Community-18'
+          Value: "Odoo-Community-18"
+        - Key: Owner
+          Value: "test"
 
 Outputs:
   InstanceId:
-    Description: 'EC2 Instance ID'
+    Description: "EC2 Instance ID"
     Value: !Ref OdooInstance
 
   InstancePublicIP:
-    Description: 'Public IP của EC2 Instance'
+    Description: "Public IP của EC2 Instance"
     Value: !GetAtt OdooInstance.PublicIp
 
   OdooURL:
-    Description: 'URL truy cập Odoo'
-    Value: !Sub 'http://${OdooInstance.PublicIp}:8069'
+    Description: "URL truy cập Odoo"
+    Value: !Sub "http://${OdooInstance.PublicIp}:8069"
 
   DatabaseName:
-    Description: 'Tên Database'
-    Value: 'odoo18'
+    Description: "Tên Database"
+    Value: "odoo18"
 
   DatabaseUser:
-    Description: 'Database User'
-    Value: 'odoo'
+    Description: "Database User"
+    Value: "odoo"
 
   DatabasePassword:
-    Description: 'Database Password'
-    Value: 'odoo123'
+    Description: "Database Password"
+    Value: "odoo123"
 
   AdminUser:
-    Description: 'Odoo Admin User'
-    Value: 'admin'
+    Description: "Odoo Admin User"
+    Value: "admin"
 
   AdminPassword:
-    Description: 'Odoo Admin Password'
-    Value: 'admin123'
+    Description: "Odoo Admin Password"
+    Value: "admin123"
 
   SSHCommand:
     Condition: HasKeyPair
-    Description: 'SSH Command để kết nối'
-    Value: !Sub 'ssh ubuntu@${OdooInstance.PublicIp}'
+    Description: "SSH Command để kết nối"
+    Value: !Sub "ssh ubuntu@${OdooInstance.PublicIp}"
 
   SecurityGroupId:
-    Description: 'Security Group ID'
+    Description: "Security Group ID"
     Value: !Ref OdooSecurityGroup
