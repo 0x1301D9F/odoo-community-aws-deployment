@@ -3,7 +3,13 @@
     "allow": [
       "Bash(git init)",
       "Bash(chmod +x deploy.sh scripts/*.sh)",
-      "Bash(git add .)"
+      "Bash(git add .)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nKhởi tạo dự án Odoo Community 18 deployment trên AWS\n\n- ✅ CloudFormation template hoàn chỉnh \\(odoo-simple.yaml\\)\n- ✅ User data script tự động cài đặt Odoo + PostgreSQL + Nginx  \n- ✅ Configuration files cho Odoo, Nginx, systemd\n- ✅ Deploy script với options và validation\n- ✅ Health check script để monitor hệ thống\n- ✅ Test template script để validate trước deploy\n- ✅ Cleanup script để xóa resources\n- ✅ README.md hướng dẫn chi tiết bằng tiếng Việt\n\nKiến trúc: EC2 t2.micro + PostgreSQL + Odoo Community 18\nChi phí: ~$9.30/tháng \\(Free Tier: $0.80/tháng\\)\nRegion: ap-southeast-1 \\(Singapore\\)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n\\)\")",
+      "WebFetch(domain:www.odoo.com)",
+      "Bash(curl -L -o images/odoo-logo.png \"https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Odoo_logo.svg/512px-Odoo_logo.svg.png\")",
+      "Bash(git add README.md)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nCập nhật README.md với hướng dẫn tường minh A-Z\n\n✨ Thêm mới:\n- 💳 BƯỚC 1: Tạo tài khoản AWS chi tiết \\(chuẩn bị visa, thẻ, verify\\)\n- 🔑 BƯỚC 2: Tạo EC2 Key Pair trên AWS Console \\(từng click\\)\n- 💻 BƯỚC 3: Cài AWS CLI đa platform \\(Windows/Mac/Linux\\)\n- ⚙️ BƯỚC 4: Cấu hình credentials với IAM console\n- 📁 BƯỚC 5: Download project với nhiều cách\n- 🚀 BƯỚC 6: Deploy options và monitoring\n- 🌐 BƯỚC 7: Truy cập Odoo và setup ban đầu\n\n🔧 Cải tiến:\n- Troubleshooting comprehensive cho t2.micro\n- Chi phí chi tiết Free Tier vs Paid\n- Security hardening và performance tuning\n- Appendices với checklists và best practices\n\n📋 Đặc điểm:\n- Hướng dẫn từ Zero → Hero hoàn chỉnh\n- Tiếng Việt dễ hiểu, từng bước cụ thể\n- Focus tiết kiệm chi phí và bảo mật\n- 1500+ dòng documentation chi tiết\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n\\)\")",
+      "WebFetch(domain:github.com)"
     ]
   }
 }
