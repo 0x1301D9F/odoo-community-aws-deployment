@@ -51,14 +51,14 @@ EC2 Instance (Ubuntu 22.04 LTS)
 
 ### Infrastructure Components
 
-| Component | Specification | Purpose |
-|-----------|---------------|---------|
-| **EC2 Instance** | t2.micro (1 vCPU, 1GB RAM) | Application server |
-| **Operating System** | Ubuntu 22.04 LTS | Stable Linux distribution |
-| **Database** | PostgreSQL 14 | Odoo data storage |
-| **Web Server** | Nginx | Reverse proxy and static files |
-| **Storage** | 8GB GP2 EBS | Root volume |
-| **Network** | Default VPC | AWS networking |
+| Component            | Specification              | Purpose                        |
+| -------------------- | -------------------------- | ------------------------------ |
+| **EC2 Instance**     | t2.micro (1 vCPU, 1GB RAM) | Application server             |
+| **Operating System** | Ubuntu 22.04 LTS           | Stable Linux distribution      |
+| **Database**         | PostgreSQL 14              | Odoo data storage              |
+| **Web Server**       | Nginx                      | Reverse proxy and static files |
+| **Storage**          | 8GB GP2 EBS                | Root volume                    |
+| **Network**          | Default VPC                | AWS networking                 |
 
 ### Software Stack
 
@@ -71,24 +71,28 @@ EC2 Instance (Ubuntu 22.04 LTS)
 ## Features
 
 ### Automation Features
+
 - Complete CloudFormation template for infrastructure provisioning
 - Automated software installation via EC2 User Data scripts
 - Service configuration and startup automation
 - Health check and monitoring scripts
 
 ### Deployment Features
+
 - Multiple deployment methods (CLI, Console, Script)
 - Parameterized CloudFormation with customizable options
 - Support for different instance types and regions
 - SSH key pair integration for secure access
 
 ### Monitoring Features
+
 - Comprehensive health check script
 - System resource monitoring
 - Application log management
 - Service status verification
 
 ### Management Features
+
 - Automated backup procedures
 - Cleanup and resource removal scripts
 - Cost monitoring and optimization guides
@@ -105,22 +109,24 @@ EC2 Instance (Ubuntu 22.04 LTS)
 
 ### Required Tools
 
-| Tool | Purpose | Installation |
-|------|---------|-------------|
+| Tool           | Purpose                | Installation                                                                                        |
+| -------------- | ---------------------- | --------------------------------------------------------------------------------------------------- |
 | **AWS CLI v2** | AWS service management | [Installation Guide](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html) |
-| **Git** | Repository management | [Download Git](https://git-scm.com/) |
-| **SSH Client** | Server access | Built-in (Linux/Mac) or PuTTY (Windows) |
+| **Git**        | Repository management  | [Download Git](https://git-scm.com/)                                                                |
+| **SSH Client** | Server access          | Built-in (Linux/Mac) or PuTTY (Windows)                                                             |
 
 ### AWS Credentials Configuration
 
 #### Step 1: Create IAM User with Administrative Access
 
 **Navigate to IAM Service:**
+
 1. Log in to AWS Console: https://console.aws.amazon.com
 2. Search for "IAM" in the services search bar
 3. Click "IAM" (Identity and Access Management)
 
 **Create New User:**
+
 1. In the left sidebar, click **"Users"**
 2. Click **"Create user"** button
 3. **User name**: Enter a descriptive name (e.g., `odoo-deployment-user`)
@@ -128,6 +134,7 @@ EC2 Instance (Ubuntu 22.04 LTS)
 5. Click **"Next: Permissions"**
 
 **Attach Administrator Policy:**
+
 1. Select **"Attach existing policies directly"**
 2. In the search box, type `AdministratorAccess`
 3. Check the box next to **"AdministratorAccess"** policy
@@ -140,12 +147,14 @@ EC2 Instance (Ubuntu 22.04 LTS)
 #### Step 2: Generate Access Keys
 
 **Download Credentials:**
+
 1. After user creation, you'll see a success page with credentials
 2. **IMPORTANT**: Copy the **Access Key ID** and **Secret Access Key**
 3. Click **"Download .csv"** to save credentials securely
 4. **Store credentials safely** - you won't be able to see the Secret Access Key again
 
 **Alternative Method (if user already exists):**
+
 1. Go to IAM → Users → Select your user
 2. Click **"Security credentials"** tab
 3. In **"Access keys"** section, click **"Create access key"**
@@ -157,11 +166,13 @@ EC2 Instance (Ubuntu 22.04 LTS)
 #### Step 3: Configure AWS CLI
 
 **Method 1: Interactive Configuration (Recommended)**
+
 ```bash
 aws configure
 ```
 
 When prompted, enter the following information:
+
 ```
 AWS Access Key ID [None]: AKIAIOSFODNN7EXAMPLE
 AWS Secret Access Key [None]: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
@@ -172,6 +183,7 @@ Default output format [None]: json
 **Method 2: Environment Variables**
 
 For Windows Command Prompt:
+
 ```cmd
 set AWS_ACCESS_KEY_ID=AKIAIOSFODNN7EXAMPLE
 set AWS_SECRET_ACCESS_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
@@ -179,6 +191,7 @@ set AWS_DEFAULT_REGION=ap-southeast-1
 ```
 
 For Windows PowerShell:
+
 ```powershell
 $env:AWS_ACCESS_KEY_ID="AKIAIOSFODNN7EXAMPLE"
 $env:AWS_SECRET_ACCESS_KEY="wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
@@ -186,6 +199,7 @@ $env:AWS_DEFAULT_REGION="ap-southeast-1"
 ```
 
 For macOS/Linux:
+
 ```bash
 export AWS_ACCESS_KEY_ID=AKIAIOSFODNN7EXAMPLE
 export AWS_SECRET_ACCESS_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
@@ -195,10 +209,12 @@ export AWS_DEFAULT_REGION=ap-southeast-1
 **Method 3: AWS Credentials File**
 
 Create/edit file at:
+
 - **Windows**: `C:\Users\[USERNAME]\.aws\credentials`
 - **macOS/Linux**: `~/.aws/credentials`
 
 Add the following content:
+
 ```ini
 [default]
 aws_access_key_id = AKIAIOSFODNN7EXAMPLE
@@ -206,10 +222,12 @@ aws_secret_access_key = wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
 ```
 
 And create/edit config file:
+
 - **Windows**: `C:\Users\[USERNAME]\.aws\config`
 - **macOS/Linux**: `~/.aws/config`
 
 Add:
+
 ```ini
 [default]
 region = ap-southeast-1
@@ -219,16 +237,18 @@ output = json
 #### Step 4: Verify Configuration
 
 Test your AWS credentials configuration:
+
 ```bash
 aws sts get-caller-identity
 ```
 
 Expected output:
+
 ```json
 {
-    "UserId": "AIDACKCEVSQ6C2EXAMPLE",
-    "Account": "123456789012",
-    "Arn": "arn:aws:iam::123456789012:user/odoo-deployment-user"
+  "UserId": "AIDACKCEVSQ6C2EXAMPLE",
+  "Account": "123456789012",
+  "Arn": "arn:aws:iam::123456789012:user/odoo-deployment-user"
 }
 ```
 
@@ -237,6 +257,7 @@ If this command returns your user information, your credentials are configured c
 #### Step 5: Test AWS Service Access
 
 Verify you can access required AWS services:
+
 ```bash
 # Test EC2 access
 aws ec2 describe-regions --region ap-southeast-1
@@ -251,6 +272,7 @@ aws iam get-user
 #### Security Best Practices
 
 **Credential Security:**
+
 - Never commit AWS credentials to version control
 - Use separate AWS accounts for development and production
 - Regularly rotate access keys (every 90 days)
@@ -259,9 +281,11 @@ aws iam get-user
 **Alternative Authentication Methods:**
 
 For enhanced security, consider:
+
 1. **AWS SSO** for centralized access management
 2. **IAM Roles** with AWS STS assume-role
 3. **AWS CLI Profiles** for multiple environments:
+
    ```bash
    aws configure --profile production
    aws configure --profile development
@@ -273,25 +297,26 @@ For enhanced security, consider:
 **Minimum Required Permissions:**
 
 For production deployments, instead of AdministratorAccess, create a custom policy with these minimum permissions:
+
 ```json
 {
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Effect": "Allow",
-            "Action": [
-                "ec2:*",
-                "cloudformation:*",
-                "iam:PassRole",
-                "iam:GetRole",
-                "iam:CreateRole",
-                "iam:DeleteRole",
-                "iam:AttachRolePolicy",
-                "iam:DetachRolePolicy"
-            ],
-            "Resource": "*"
-        }
-    ]
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "ec2:*",
+        "cloudformation:*",
+        "iam:PassRole",
+        "iam:GetRole",
+        "iam:CreateRole",
+        "iam:DeleteRole",
+        "iam:AttachRolePolicy",
+        "iam:DetachRolePolicy"
+      ],
+      "Resource": "*"
+    }
+  ]
 }
 ```
 
@@ -309,11 +334,13 @@ cd odoo-community-aws-deployment
 If you haven't set up AWS credentials yet, follow the detailed [AWS Credentials Configuration](#aws-credentials-configuration) section above.
 
 If credentials are already configured, verify them:
+
 ```bash
 aws sts get-caller-identity
 ```
 
 For new setup, run:
+
 ```bash
 aws configure
 # Provide: Access Key ID, Secret Access Key, Region (ap-southeast-1), Output format (json)
@@ -329,19 +356,15 @@ chmod 600 odoo-keypair.pem
 
 ### Step 4: Validate Template
 
-```bash
-# Test CloudFormation template
-./scripts/test-template.sh
+```powershell
+.\scripts\test-template.ps1
 ```
 
 ### Step 5: Deploy Infrastructure
 
-```bash
-# Deploy with default settings
-./deploy.sh
-
-# Deploy with SSH key for server access
-./deploy.sh -k odoo-keypair
+```powershell
+.\scripts\deploy.ps1
+.\scripts\deploy.ps1 -KeyPair odoo-keypair
 ```
 
 ### Step 6: Access Odoo
@@ -359,36 +382,22 @@ Password: admin123
 
 ### Command Line Deployment
 
-The deployment script supports various parameters for customization:
+The deployment script supports various parameters for customization.
 
-```bash
-# Basic deployment
-./deploy.sh
-
-# Custom stack name
-./deploy.sh --name production-odoo
-
-# Different instance type
-./deploy.sh --type t2.small
-
-# Specific region
-./deploy.sh --region us-west-2
-
-# With SSH access
-./deploy.sh --key my-keypair
-
-# Full customization
-./deploy.sh --name prod-odoo --type t2.small --key prod-key --region us-west-2
+```powershell
+.\scripts\deploy.ps1
+.\scripts\deploy.ps1 -Name production-odoo
+.\scripts\deploy.ps1 -InstanceType t2.small -KeyPair my-keypair
 ```
 
 ### Parameter Reference
 
-| Parameter | Description | Default | Example |
-|-----------|-------------|---------|---------|
-| `-n, --name` | CloudFormation stack name | odoo-community-18 | `--name prod-odoo` |
-| `-t, --type` | EC2 instance type | t2.micro | `--type t2.small` |
-| `-k, --key` | EC2 key pair name | None | `--key my-keypair` |
-| `-r, --region` | AWS region | ap-southeast-1 | `--region us-east-1` |
+| Parameter      | Description               | Default           | Example              |
+| -------------- | ------------------------- | ----------------- | -------------------- |
+| `-n, --name`   | CloudFormation stack name | odoo-community-18 | `--name prod-odoo`   |
+| `-t, --type`   | EC2 instance type         | t2.micro          | `--type t2.small`    |
+| `-k, --key`    | EC2 key pair name         | None              | `--key my-keypair`   |
+| `-r, --region` | AWS region                | ap-southeast-1    | `--region us-east-1` |
 
 ### AWS Console Deployment
 
@@ -438,6 +447,7 @@ proxy_mode = True
 ### Database Configuration
 
 PostgreSQL is configured with the following parameters:
+
 - **Database Name**: odoo18
 - **Database User**: odoo
 - **Connection**: localhost:5432
@@ -446,6 +456,7 @@ PostgreSQL is configured with the following parameters:
 ### Nginx Configuration
 
 Nginx serves as a reverse proxy with the following features:
+
 - HTTP to Odoo proxy on port 8069
 - Static file caching
 - Gzip compression
@@ -463,6 +474,7 @@ sudo ./scripts/health-check.sh
 ```
 
 **Monitored Components:**
+
 - Odoo service status
 - PostgreSQL availability
 - Nginx functionality
@@ -473,12 +485,14 @@ sudo ./scripts/health-check.sh
 ### Log Management
 
 **Log Locations:**
+
 - Odoo Application: `/var/log/odoo/odoo.log`
 - Nginx Access: `/var/log/nginx/odoo.access.log`
 - Nginx Error: `/var/log/nginx/odoo.error.log`
 - System: `journalctl -u odoo`
 
 **Log Monitoring Commands:**
+
 ```bash
 # Real-time Odoo logs
 sudo tail -f /var/log/odoo/odoo.log
@@ -494,16 +508,19 @@ df -h
 ### Service Management
 
 **Odoo Service:**
+
 ```bash
 sudo systemctl start|stop|restart|status odoo
 ```
 
 **PostgreSQL Service:**
+
 ```bash
 sudo systemctl start|stop|restart|status postgresql
 ```
 
 **Nginx Service:**
+
 ```bash
 sudo systemctl start|stop|restart|status nginx
 ```
@@ -511,6 +528,7 @@ sudo systemctl start|stop|restart|status nginx
 ### Backup Procedures
 
 **Database Backup:**
+
 ```bash
 # Create backup
 sudo -u postgres pg_dump odoo18 > backup_$(date +%Y%m%d).sql
@@ -520,6 +538,7 @@ sudo -u postgres psql odoo18 < backup_file.sql
 ```
 
 **File System Backup:**
+
 ```bash
 # Backup Odoo files
 sudo tar -czf odoo_backup_$(date +%Y%m%d).tar.gz /opt/odoo/filestore
@@ -531,16 +550,17 @@ sudo tar -czf odoo_backup_$(date +%Y%m%d).tar.gz /opt/odoo/filestore
 
 **Monthly Costs (ap-southeast-1):**
 
-| Resource | Free Tier | Post Free Tier |
-|----------|-----------|----------------|
-| EC2 t2.micro (750h) | $0.00 | $8.47 |
-| EBS Storage (8GB) | $0.00 | $0.80 |
-| Data Transfer (15GB) | $0.00 | $0.90 |
-| **Total** | **$0.00** | **$10.17** |
+| Resource             | Free Tier | Post Free Tier |
+| -------------------- | --------- | -------------- |
+| EC2 t2.micro (750h)  | $0.00     | $8.47          |
+| EBS Storage (8GB)    | $0.00     | $0.80          |
+| Data Transfer (15GB) | $0.00     | $0.90          |
+| **Total**            | **$0.00** | **$10.17**     |
 
 ### Optimization Strategies
 
 **1. Reserved Instances**
+
 ```bash
 # Purchase 1-year Reserved Instance (40% savings)
 aws ec2 purchase-reserved-instances-offering \
@@ -549,11 +569,13 @@ aws ec2 purchase-reserved-instances-offering \
 ```
 
 **2. Instance Scheduling**
+
 - Implement Lambda functions for automatic start/stop
 - Use CloudWatch Events for scheduling
 - Potential 60% cost reduction for non-24/7 operations
 
 **3. Resource Monitoring**
+
 ```bash
 # Set up billing alerts
 aws budgets create-budget \
@@ -562,30 +584,33 @@ aws budgets create-budget \
 ```
 
 **4. Storage Optimization**
+
 - Regular log rotation
 - Database maintenance (VACUUM, REINDEX)
 - Unnecessary file cleanup
 
 ### Instance Type Comparison
 
-| Instance Type | vCPU | Memory | Monthly Cost | Recommended Use |
-|---------------|------|--------|--------------|-----------------|
-| t2.micro | 1 | 1GB | $8.47 | Development, <5 users |
-| t2.small | 1 | 2GB | $16.94 | Small business, <10 users |
-| t2.medium | 2 | 4GB | $33.87 | Growing business, <25 users |
-| t3.small | 2 | 2GB | $18.98 | Better performance than t2 |
+| Instance Type | vCPU | Memory | Monthly Cost | Recommended Use             |
+| ------------- | ---- | ------ | ------------ | --------------------------- |
+| t2.micro      | 1    | 1GB    | $8.47        | Development, <5 users       |
+| t2.small      | 1    | 2GB    | $16.94       | Small business, <10 users   |
+| t2.medium     | 2    | 4GB    | $33.87       | Growing business, <25 users |
+| t3.small      | 2    | 2GB    | $18.98       | Better performance than t2  |
 
 ## Security Considerations
 
 ### Network Security
 
 **Security Group Configuration:**
+
 - SSH (Port 22): Restricted to specific IP ranges
 - HTTP (Port 80): Open to internet
 - Odoo (Port 8069): Open to internet
 - PostgreSQL (Port 5432): Localhost only
 
 **Firewall Configuration:**
+
 ```bash
 # Enable UFW firewall
 sudo ufw enable
@@ -597,18 +622,21 @@ sudo ufw allow 8069/tcp
 ### Application Security
 
 **1. Change Default Passwords**
+
 ```bash
 # Change Odoo admin password via web interface
 # Settings > Users & Companies > Users > Administrator
 ```
 
 **2. Database Security**
+
 ```bash
 # Change PostgreSQL passwords
 sudo -u postgres psql -c "ALTER USER odoo WITH PASSWORD 'new-secure-password';"
 ```
 
 **3. SSH Hardening**
+
 ```bash
 # Disable password authentication
 sudo nano /etc/ssh/sshd_config
@@ -619,6 +647,7 @@ sudo systemctl restart ssh
 
 **4. SSL Implementation**
 For production deployments, implement SSL/TLS:
+
 - Use Let's Encrypt for free certificates
 - Configure Nginx for HTTPS
 - Redirect HTTP to HTTPS
@@ -638,9 +667,10 @@ For production deployments, implement SSL/TLS:
 
 **Issue: Cannot access Odoo web interface**
 
-*Symptoms:* Browser timeout, connection refused
+_Symptoms:_ Browser timeout, connection refused
 
-*Solutions:*
+_Solutions:_
+
 1. Verify Security Group allows port 8069
 2. Check Odoo service status: `sudo systemctl status odoo`
 3. Verify port binding: `sudo netstat -tlnp | grep 8069`
@@ -648,9 +678,10 @@ For production deployments, implement SSL/TLS:
 
 **Issue: Odoo service fails to start**
 
-*Symptoms:* Service in failed state, error logs
+_Symptoms:_ Service in failed state, error logs
 
-*Solutions:*
+_Solutions:_
+
 1. Check logs: `sudo journalctl -u odoo -n 50`
 2. Verify configuration: `sudo odoo --config=/etc/odoo.conf --test-enable`
 3. Check permissions: `sudo chown -R odoo:odoo /opt/odoo`
@@ -658,18 +689,20 @@ For production deployments, implement SSL/TLS:
 
 **Issue: Database connection errors**
 
-*Symptoms:* Database connection refused, authentication failed
+_Symptoms:_ Database connection refused, authentication failed
 
-*Solutions:*
+_Solutions:_
+
 1. PostgreSQL status: `sudo systemctl status postgresql`
 2. Reset password: `sudo -u postgres psql -c "ALTER USER odoo WITH PASSWORD 'odoo123';"`
 3. Recreate database: `sudo -u postgres createdb -O odoo odoo18`
 
 **Issue: Memory exhaustion (t2.micro)**
 
-*Symptoms:* Services crashing, slow response times
+_Symptoms:_ Services crashing, slow response times
 
-*Solutions:*
+_Solutions:_
+
 1. Add swap file:
    ```bash
    sudo fallocate -l 1G /swapfile
@@ -682,7 +715,8 @@ For production deployments, implement SSL/TLS:
 
 **Issue: High CPU usage**
 
-*Solutions:*
+_Solutions:_
+
 1. Monitor processes: `htop`
 2. Optimize database queries
 3. Enable Odoo worker processes (for larger instances)
@@ -691,6 +725,7 @@ For production deployments, implement SSL/TLS:
 ### Diagnostic Commands
 
 **System Health:**
+
 ```bash
 # System resources
 free -h
@@ -706,6 +741,7 @@ systemctl status odoo nginx postgresql
 ```
 
 **Application Health:**
+
 ```bash
 # Odoo logs
 sudo tail -f /var/log/odoo/odoo.log
@@ -720,6 +756,7 @@ sudo nginx -t
 ### Performance Tuning
 
 **For t2.micro instances:**
+
 ```ini
 # /etc/odoo.conf optimizations
 workers = 0  # Single process mode
@@ -729,6 +766,7 @@ limit_memory_soft = 629145600  # 600MB
 ```
 
 **PostgreSQL optimizations:**
+
 ```sql
 -- /etc/postgresql/14/main/postgresql.conf
 shared_buffers = 128MB
@@ -753,6 +791,7 @@ Use the provided cleanup script to remove all AWS resources:
 ### Manual Cleanup
 
 **CloudFormation:**
+
 ```bash
 # Delete stack
 aws cloudformation delete-stack --stack-name odoo-community-18
@@ -762,6 +801,7 @@ aws cloudformation describe-stack-events --stack-name odoo-community-18
 ```
 
 **Verify Resource Removal:**
+
 ```bash
 # Check remaining instances
 aws ec2 describe-instances --filters "Name=tag:aws:cloudformation:stack-name,Values=odoo-community-18"
@@ -791,6 +831,7 @@ We welcome contributions to improve this deployment solution. Please follow thes
 ### Testing
 
 Before submitting changes:
+
 1. Validate CloudFormation templates
 2. Test deployment in clean AWS environment
 3. Verify cleanup procedures
@@ -817,6 +858,7 @@ This project is licensed under the MIT License. See [LICENSE](LICENSE) file for 
 ### Professional Services
 
 For enterprise deployments, custom integrations, or professional support:
+
 - AWS Professional Services
 - Odoo Implementation Partners
 - Third-party DevOps consultants
