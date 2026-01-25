@@ -61,13 +61,11 @@ sudo -u postgres psql -c "ALTER USER odoo WITH PASSWORD 'odoo123';"
 sudo -u postgres createdb -O odoo odoo18
 
 echo "5. Tạo system user cho Odoo..."
-useradd -m -d /opt/odoo -U -r -s /bin/bash odoo
+useradd -d /opt/odoo -U -r -s /bin/bash odoo
 
 echo "6. Download Odoo Community 18..."
-cd /opt
-
-# Clone Odoo repository
-git clone --depth 1 --branch 18.0 https://www.github.com/odoo/odoo.git
+# Git clone sẽ tự tạo directory /opt/odoo
+git clone --depth 1 --branch 18.0 https://www.github.com/odoo/odoo.git /opt/odoo
 
 # Change ownership
 chown -R odoo:odoo /opt/odoo
