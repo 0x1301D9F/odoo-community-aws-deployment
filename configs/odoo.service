@@ -1,0 +1,30 @@
+[Unit]
+Description=Odoo Community 18
+Documentation=http://www.odoo.com
+After=network.target postgresql.service
+
+[Service]
+Type=simple
+SyslogIdentifier=odoo
+PermissionsStartOnly=true
+User=odoo
+Group=odoo
+ExecStart=/usr/bin/python3 /opt/odoo/odoo-bin -c /etc/odoo.conf
+StandardOutput=journal+console
+KillMode=mixed
+KillSignal=SIGINT
+TimeoutStopSec=600
+Restart=on-failure
+RestartSec=5
+
+# Environment
+Environment="PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+
+# Security settings
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ReadWritePaths=/var/log/odoo /var/run/odoo /opt/odoo/filestore
+
+[Install]
+WantedBy=multi-user.target

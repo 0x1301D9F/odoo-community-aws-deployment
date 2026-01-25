@@ -1,0 +1,319 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Odoo Community 18 deployment on EC2 t2.micro - Simple and Cost-Effective'
+
+Parameters:
+  KeyPairName:
+    Type: String
+    Description: 'EC2 Key Pair name for SSH access (optional)'
+    Default: ''
+
+  InstanceType:
+    Type: String
+    Description: 'EC2 instance type'
+    Default: t2.micro
+    AllowedValues:
+      - t2.micro
+      - t2.small
+      - t2.medium
+
+Conditions:
+  HasKeyPair: !Not [!Equals [!Ref KeyPairName, '']]
+
+Resources:
+  # Security Group cho Odoo
+  OdooSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: 'Security group for Odoo Community 18'
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+          Description: 'SSH access'
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+          Description: 'HTTP access'
+        - IpProtocol: tcp
+          FromPort: 8069
+          ToPort: 8069
+          CidrIp: 0.0.0.0/0
+          Description: 'Odoo direct access'
+      Tags:
+        - Key: Name
+          Value: 'OdooSecurityGroup'
+
+  # EC2 Instance cho Odoo
+  OdooInstance:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: !Ref InstanceType
+      ImageId: ami-0fa377108253bf620  # Ubuntu 22.04 LTS trong ap-southeast-1
+      KeyName: !If [HasKeyPair, !Ref KeyPairName, !Ref AWS::NoValue]
+      SecurityGroupIds:
+        - !Ref OdooSecurityGroup
+      BlockDeviceMappings:
+        - DeviceName: /dev/sda1
+          Ebs:
+            VolumeSize: 8
+            VolumeType: gp2
+            DeleteOnTermination: true
+      UserData:
+        Fn::Base64: !Sub |
+          #!/bin/bash
+
+          # Log tất cả output
+          exec > >(tee /var/log/user-data.log|logger -t user-data -s 2>/dev/console) 2>&1
+          echo "Bắt đầu cài đặt Odoo Community 18..."
+
+          # Update hệ thống
+          apt-get update -y
+          apt-get upgrade -y
+
+          # Set timezone
+          timedatectl set-timezone Asia/Ho_Chi_Minh
+
+          # Cài đặt packages cần thiết
+          apt-get install -y python3 python3-pip python3-dev python3-venv python3-wheel
+          apt-get install -y libxml2-dev libxslt1-dev libevent-dev libsasl2-dev libldap2-dev
+          apt-get install -y libpq-dev libpng-dev libjpeg-dev libfreetype6-dev
+          apt-get install -y build-essential wget git curl nginx
+          apt-get install -y postgresql postgresql-contrib
+          apt-get install -y wkhtmltopdf
+          apt-get install -y nodejs npm
+
+          # Cài đặt PostgreSQL
+          echo "Cấu hình PostgreSQL..."
+          systemctl enable postgresql
+          systemctl start postgresql
+
+          # Tạo database user và database
+          sudo -u postgres createuser -d -R -S odoo
+          sudo -u postgres psql -c "ALTER USER odoo WITH PASSWORD 'odoo123';"
+          sudo -u postgres createdb -O odoo odoo18
+
+          # Tạo odoo user
+          useradd -m -d /opt/odoo -U -r -s /bin/bash odoo
+
+          # Clone Odoo Community 18
+          echo "Download Odoo Community 18..."
+          cd /opt
+          git clone --depth 1 --branch 18.0 https://www.github.com/odoo/odoo.git
+          chown -R odoo:odoo /opt/odoo
+
+          # Cài đặt Python dependencies
+          echo "Cài đặt Python dependencies..."
+          cd /opt/odoo
+          python3 -m pip install --upgrade pip
+          pip3 install -r requirements.txt
+
+          # Tạo thư mục logs
+          mkdir -p /var/log/odoo
+          chown odoo:odoo /var/log/odoo
+
+          # Tạo Odoo config file
+          cat > /etc/odoo.conf << 'EOF'
+          [options]
+          ; Cấu hình cơ bản cho Odoo Community 18
+          addons_path = /opt/odoo/addons
+          admin_passwd = admin123
+          csv_internal_sep = ,
+          db_host = localhost
+          db_port = 5432
+          db_user = odoo
+          db_password = odoo123
+          db_name = odoo18
+          db_template = template0
+          dbfilter = ^odoo18$
+          demo = {}
+          email_from = False
+          geoip_database = /usr/share/GeoIP/GeoLite2-City.mmdb
+          http_interface = 0.0.0.0
+          http_port = 8069
+          import_partial =
+          list_db = False
+          log_db = False
+          log_db_level = warning
+          log_handler = :INFO
+          log_level = info
+          logfile = /var/log/odoo/odoo.log
+          longpolling_port = 8072
+          max_cron_threads = 2
+          osv_memory_age_limit = False
+          osv_memory_count_limit = False
+          pg_path = /usr/bin
+          pidfile = /var/run/odoo/odoo.pid
+          proxy_mode = True
+          reportgz = False
+          screencasts =
+          screenshots = /tmp/odoo_tests
+          server_wide_modules = base,web
+          smtp_password = False
+          smtp_port = 25
+          smtp_server = localhost
+          smtp_ssl = False
+          smtp_user = False
+          syslog = False
+          test_enable = False
+          test_file =
+          test_tags = None
+          translate_modules = ['all']
+          unaccent = False
+          upgrade_path =
+          without_demo = False
+          workers = 0
+          EOF
+
+          chown odoo:odoo /etc/odoo.conf
+
+          # Tạo systemd service
+          cat > /etc/systemd/system/odoo.service << 'EOF'
+          [Unit]
+          Description=Odoo Community 18
+          Documentation=http://www.odoo.com
+          After=network.target postgresql.service
+
+          [Service]
+          Type=simple
+          SyslogIdentifier=odoo
+          PermissionsStartOnly=true
+          User=odoo
+          Group=odoo
+          ExecStart=/usr/bin/python3 /opt/odoo/odoo-bin -c /etc/odoo.conf
+          StandardOutput=journal+console
+
+          [Install]
+          WantedBy=multi-user.target
+          EOF
+
+          # Cấu hình Nginx
+          cat > /etc/nginx/sites-available/odoo << 'EOF'
+          # Odoo Community 18 Nginx Configuration
+          upstream odoo {
+              server 127.0.0.1:8069;
+          }
+
+          server {
+              listen 80;
+              server_name _;
+
+              # Security headers
+              add_header X-Frame-Options "SAMEORIGIN" always;
+              add_header X-Content-Type-Options "nosniff" always;
+              add_header X-XSS-Protection "1; mode=block" always;
+
+              # Logs
+              access_log /var/log/nginx/odoo.access.log;
+              error_log /var/log/nginx/odoo.error.log;
+
+              # Proxy settings
+              proxy_read_timeout 720s;
+              proxy_connect_timeout 720s;
+              proxy_send_timeout 720s;
+              proxy_set_header X-Forwarded-Host $host;
+              proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+              proxy_set_header X-Forwarded-Proto $scheme;
+              proxy_set_header X-Real-IP $remote_addr;
+
+              # Location for Odoo
+              location / {
+                  proxy_redirect off;
+                  proxy_pass http://odoo;
+              }
+
+              # Cache static files
+              location ~* /web/static/ {
+                  proxy_cache_valid 200 90m;
+                  proxy_buffering on;
+                  expires 864000;
+                  proxy_pass http://odoo;
+              }
+
+              # Gzip compression
+              gzip_types
+                  text/css
+                  text/less
+                  text/plain
+                  text/xml
+                  text/javascript
+                  application/json
+                  application/javascript
+                  application/xml+rss;
+          }
+          EOF
+
+          # Enable Nginx site
+          ln -s /etc/nginx/sites-available/odoo /etc/nginx/sites-enabled/
+          rm -f /etc/nginx/sites-enabled/default
+
+          # Tạo thư mục cho PID file
+          mkdir -p /var/run/odoo
+          chown odoo:odoo /var/run/odoo
+
+          # Enable và start services
+          systemctl enable odoo
+          systemctl enable nginx
+
+          # Restart services
+          systemctl restart postgresql
+          systemctl restart nginx
+
+          # Khởi tạo database và start Odoo
+          echo "Khởi tạo Odoo database..."
+          sudo -u odoo /usr/bin/python3 /opt/odoo/odoo-bin -c /etc/odoo.conf -d odoo18 -i base --stop-after-init
+
+          # Start Odoo service
+          systemctl start odoo
+
+          echo "Hoàn thành cài đặt Odoo Community 18!"
+          echo "Truy cập: http://$(curl -s http://169.254.169.254/latest/meta-data/public-ipv4):8069"
+          echo "Database: odoo18"
+          echo "Admin: admin / admin123"
+
+      Tags:
+        - Key: Name
+          Value: 'Odoo-Community-18'
+
+Outputs:
+  InstanceId:
+    Description: 'EC2 Instance ID'
+    Value: !Ref OdooInstance
+
+  InstancePublicIP:
+    Description: 'Public IP của EC2 Instance'
+    Value: !GetAtt OdooInstance.PublicIp
+
+  OdooURL:
+    Description: 'URL truy cập Odoo'
+    Value: !Sub 'http://${OdooInstance.PublicIp}:8069'
+
+  DatabaseName:
+    Description: 'Tên Database'
+    Value: 'odoo18'
+
+  DatabaseUser:
+    Description: 'Database User'
+    Value: 'odoo'
+
+  DatabasePassword:
+    Description: 'Database Password'
+    Value: 'odoo123'
+
+  AdminUser:
+    Description: 'Odoo Admin User'
+    Value: 'admin'
+
+  AdminPassword:
+    Description: 'Odoo Admin Password'
+    Value: 'admin123'
+
+  SSHCommand:
+    Condition: HasKeyPair
+    Description: 'SSH Command để kết nối'
+    Value: !Sub 'ssh ubuntu@${OdooInstance.PublicIp}'
+
+  SecurityGroupId:
+    Description: 'Security Group ID'
+    Value: !Ref OdooSecurityGroup

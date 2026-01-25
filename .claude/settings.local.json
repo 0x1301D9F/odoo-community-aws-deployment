@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git init)",
+      "Bash(chmod +x deploy.sh scripts/*.sh)",
+      "Bash(git add .)"
+    ]
+  }
+}

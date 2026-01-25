@@ -1,0 +1,51 @@
+# AWS Credentials
+.aws/
+*.pem
+
+# Environment files
+.env
+*.env
+
+# Logs
+*.log
+logs/
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.temp
+
+# AWS CloudFormation
+*-outputs.json
+stack-outputs.json
