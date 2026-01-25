@@ -77,6 +77,7 @@ Resources:
 
           # Cài đặt packages cần thiết
           apt-get install -y python3 python3-pip python3-dev python3-venv python3-wheel
+          apt-get install -y python3-lxml python3-gevent python3-psycopg2 python3-pil python3-ldap
           apt-get install -y libxml2-dev libxslt1-dev libevent-dev libsasl2-dev libldap2-dev
           apt-get install -y libpq-dev libpng-dev libjpeg-dev libfreetype6-dev
           apt-get install -y build-essential wget git curl nginx
@@ -107,6 +108,14 @@ Resources:
           echo "Cài đặt Python dependencies..."
           cd /opt/odoo
           python3 -m pip install --upgrade pip
+
+          # Loại bỏ các packages đã cài qua apt để tránh pip build lại gây lỗi
+          sed -i '/gevent/d' requirements.txt
+          sed -i '/lxml/d' requirements.txt
+          sed -i '/psycopg2/d' requirements.txt
+          sed -i '/Pillow/d' requirements.txt
+          sed -i '/python-ldap/d' requirements.txt
+
           pip3 install -r requirements.txt
 
           # Tạo thư mục logs
