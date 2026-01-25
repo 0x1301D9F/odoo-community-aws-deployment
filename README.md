@@ -113,10 +113,187 @@ EC2 Instance (Ubuntu 22.04 LTS)
 
 ### AWS Credentials Configuration
 
-Create IAM user with the following minimum permissions:
-- EC2 full access
-- CloudFormation full access
-- IAM read access for credential verification
+#### Step 1: Create IAM User with Administrative Access
+
+**Navigate to IAM Service:**
+1. Log in to AWS Console: https://console.aws.amazon.com
+2. Search for "IAM" in the services search bar
+3. Click "IAM" (Identity and Access Management)
+
+**Create New User:**
+1. In the left sidebar, click **"Users"**
+2. Click **"Create user"** button
+3. **User name**: Enter a descriptive name (e.g., `odoo-deployment-user`)
+4. **Select AWS access type**: Check **"Programmatic access"**
+5. Click **"Next: Permissions"**
+
+**Attach Administrator Policy:**
+1. Select **"Attach existing policies directly"**
+2. In the search box, type `AdministratorAccess`
+3. Check the box next to **"AdministratorAccess"** policy
+4. Click **"Next: Tags"** (optional, can skip)
+5. Click **"Next: Review"**
+6. Review the configuration and click **"Create user"**
+
+**Important**: For production environments, consider using more restrictive policies instead of full admin access.
+
+#### Step 2: Generate Access Keys
+
+**Download Credentials:**
+1. After user creation, you'll see a success page with credentials
+2. **IMPORTANT**: Copy the **Access Key ID** and **Secret Access Key**
+3. Click **"Download .csv"** to save credentials securely
+4. **Store credentials safely** - you won't be able to see the Secret Access Key again
+
+**Alternative Method (if user already exists):**
+1. Go to IAM → Users → Select your user
+2. Click **"Security credentials"** tab
+3. In **"Access keys"** section, click **"Create access key"**
+4. Select **"Command Line Interface (CLI)"**
+5. Check the confirmation box and click **"Next"**
+6. Add description tag (optional) and click **"Create access key"**
+7. Copy or download the credentials
+
+#### Step 3: Configure AWS CLI
+
+**Method 1: Interactive Configuration (Recommended)**
+```bash
+aws configure
+```
+
+When prompted, enter the following information:
+```
+AWS Access Key ID [None]: AKIAIOSFODNN7EXAMPLE
+AWS Secret Access Key [None]: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+Default region name [None]: ap-southeast-1
+Default output format [None]: json
+```
+
+**Method 2: Environment Variables**
+
+For Windows Command Prompt:
+```cmd
+set AWS_ACCESS_KEY_ID=AKIAIOSFODNN7EXAMPLE
+set AWS_SECRET_ACCESS_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+set AWS_DEFAULT_REGION=ap-southeast-1
+```
+
+For Windows PowerShell:
+```powershell
+$env:AWS_ACCESS_KEY_ID="AKIAIOSFODNN7EXAMPLE"
+$env:AWS_SECRET_ACCESS_KEY="wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
+$env:AWS_DEFAULT_REGION="ap-southeast-1"
+```
+
+For macOS/Linux:
+```bash
+export AWS_ACCESS_KEY_ID=AKIAIOSFODNN7EXAMPLE
+export AWS_SECRET_ACCESS_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+export AWS_DEFAULT_REGION=ap-southeast-1
+```
+
+**Method 3: AWS Credentials File**
+
+Create/edit file at:
+- **Windows**: `C:\Users\[USERNAME]\.aws\credentials`
+- **macOS/Linux**: `~/.aws/credentials`
+
+Add the following content:
+```ini
+[default]
+aws_access_key_id = AKIAIOSFODNN7EXAMPLE
+aws_secret_access_key = wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+```
+
+And create/edit config file:
+- **Windows**: `C:\Users\[USERNAME]\.aws\config`
+- **macOS/Linux**: `~/.aws/config`
+
+Add:
+```ini
+[default]
+region = ap-southeast-1
+output = json
+```
+
+#### Step 4: Verify Configuration
+
+Test your AWS credentials configuration:
+```bash
+aws sts get-caller-identity
+```
+
+Expected output:
+```json
+{
+    "UserId": "AIDACKCEVSQ6C2EXAMPLE",
+    "Account": "123456789012",
+    "Arn": "arn:aws:iam::123456789012:user/odoo-deployment-user"
+}
+```
+
+If this command returns your user information, your credentials are configured correctly.
+
+#### Step 5: Test AWS Service Access
+
+Verify you can access required AWS services:
+```bash
+# Test EC2 access
+aws ec2 describe-regions --region ap-southeast-1
+
+# Test CloudFormation access
+aws cloudformation list-stacks --region ap-southeast-1
+
+# Test IAM access (for key pair creation)
+aws iam get-user
+```
+
+#### Security Best Practices
+
+**Credential Security:**
+- Never commit AWS credentials to version control
+- Use separate AWS accounts for development and production
+- Regularly rotate access keys (every 90 days)
+- Monitor AWS CloudTrail for unauthorized API calls
+
+**Alternative Authentication Methods:**
+
+For enhanced security, consider:
+1. **AWS SSO** for centralized access management
+2. **IAM Roles** with AWS STS assume-role
+3. **AWS CLI Profiles** for multiple environments:
+   ```bash
+   aws configure --profile production
+   aws configure --profile development
+
+   # Use specific profile
+   aws --profile production sts get-caller-identity
+   ```
+
+**Minimum Required Permissions:**
+
+For production deployments, instead of AdministratorAccess, create a custom policy with these minimum permissions:
+```json
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "ec2:*",
+                "cloudformation:*",
+                "iam:PassRole",
+                "iam:GetRole",
+                "iam:CreateRole",
+                "iam:DeleteRole",
+                "iam:AttachRolePolicy",
+                "iam:DetachRolePolicy"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
+```
 
 ## Quick Start
 
@@ -129,6 +306,14 @@ cd odoo-community-aws-deployment
 
 ### Step 2: Configure AWS Credentials
 
+If you haven't set up AWS credentials yet, follow the detailed [AWS Credentials Configuration](#aws-credentials-configuration) section above.
+
+If credentials are already configured, verify them:
+```bash
+aws sts get-caller-identity
+```
+
+For new setup, run:
 ```bash
 aws configure
 # Provide: Access Key ID, Secret Access Key, Region (ap-southeast-1), Output format (json)
