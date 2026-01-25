@@ -123,7 +123,7 @@ Create IAM user with the following minimum permissions:
 ### Step 1: Clone Repository
 
 ```bash
-git clone https://github.com/your-username/odoo-community-aws-deployment.git
+git clone https://github.com/ihatesea69/odoo-community-aws-deployment.git
 cd odoo-community-aws-deployment
 ```
 
