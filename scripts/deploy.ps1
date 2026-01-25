@@ -99,34 +99,33 @@ catch {
     exit 1
 }
 
-# Prepare parameters
-$parameters = @()
-$parameters += "ParameterKey=InstanceType,ParameterValue=$InstanceType"
-if ($KeyPair) {
-    $parameters += "ParameterKey=KeyPairName,ParameterValue=$KeyPair"
-}
-
 Write-Host ""
 Write-Host "Bat dau deploy CloudFormation stack..." -ForegroundColor Yellow
 
 # Deploy stack
-$createArgs = @(
-    "cloudformation", "create-stack",
-    "--stack-name", $Name,
-    "--template-body", $templateBody,
-    "--parameters", ($parameters -join " "),
-    "--region", $Region,
-    "--capabilities", "CAPABILITY_IAM"
-)
-
 try {
-    aws @createArgs
+    if ($KeyPair) {
+        aws cloudformation create-stack `
+            --stack-name $Name `
+            --template-body $templateBody `
+            --parameters "ParameterKey=InstanceType,ParameterValue=$InstanceType" "ParameterKey=KeyPairName,ParameterValue=$KeyPair" `
+            --region $Region `
+            --capabilities CAPABILITY_IAM
+    } else {
+        aws cloudformation create-stack `
+            --stack-name $Name `
+            --template-body $templateBody `
+            --parameters "ParameterKey=InstanceType,ParameterValue=$InstanceType" `
+            --region $Region `
+            --capabilities CAPABILITY_IAM
+    }
     if ($LASTEXITCODE -ne 0) { throw }
 }
 catch {
     Write-Host "Loi khi tao CloudFormation stack" -ForegroundColor Red
     exit 1
 }
+
 
 Write-Host "CloudFormation stack duoc tao thanh cong" -ForegroundColor Green
 Write-Host ""
