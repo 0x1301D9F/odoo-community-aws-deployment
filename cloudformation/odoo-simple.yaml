@@ -43,7 +43,7 @@ Resources:
           Description: "Odoo direct access"
       Tags:
         - Key: Name
-          Value: "OdooSecurityGroup"
+          Value: "nghi-danh-server-sg"
 
   # EC2 Instance cho Odoo
   OdooInstance:
@@ -283,7 +283,7 @@ Resources:
 
       Tags:
         - Key: Name
-          Value: "Odoo-Community-18"
+          Value: "nghi-danh-server"
         - Key: Owner
           Value: "test"
 

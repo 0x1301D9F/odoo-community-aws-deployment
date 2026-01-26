@@ -3,7 +3,7 @@
 
 param(
     [Alias("n")]
-    [string]$Name = "odoo-community-18",
+    [string]$Name = "nghi-danh",
     
     [Alias("r")]
     [string]$Region = "ap-southeast-1",
