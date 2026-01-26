@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Odoo Community 18 • Secure AWS Deployment</title>
+    <meta
+      name="description"
+      content="Deploy Odoo Community 18 in one click on AWS. Secure, optimized, and developer-friendly."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="https://github.com/ihatesea69.png"
+    />
+  </head>
+  <body>
+    <nav class="navbar">
+      <div class="logo">Odoo<span class="highlight">AWS</span></div>
+      <div class="nav-links">
+        <a href="#features">Features</a>
+        <a href="#quickstart">Quick Start</a>
+        <a href="#docs">Documentation</a>
+        <a
+          href="https://github.com/ihatesea69/odoo-community-aws-deployment"
+          target="_blank"
+          class="btn-primary"
+          >View on GitHub</a
+        >
+      </div>
+    </nav>
+
+    <header class="hero">
+      <div class="hero-content">
+        <h1>Deploy Odoo Like a Pro.</h1>
+        <p>
+          One-click AWS CloudFormation template for Odoo Community 18.<br />Secure,
+          optimized Nginx, and production-ready in minutes.
+        </p>
+        <div class="cta-group">
+          <a href="#quickstart" class="btn-primary">Get Started</a>
+          <a
+            href="https://github.com/ihatesea69/odoo-community-aws-deployment"
+            target="_blank"
+            class="btn-secondary"
+            >Star Repo</a
+          >
+        </div>
+        <div class="badges">
+          <span class="badge">Windows Compatible</span>
+          <span class="badge">Native PowerShell</span>
+          <span class="badge">Ubuntu 22.04 LTS</span>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="terminal-window">
+          <div class="terminal-header">
+            <span class="dot red"></span>
+            <span class="dot yellow"></span>
+            <span class="dot green"></span>
+          </div>
+          <div class="terminal-body">
+            <div class="code-line">
+              <span class="prompt">PS C:\></span> .\scripts\deploy.ps1 -Name
+              my-odoo
+            </div>
+            <div class="code-line output">
+              Deploying CloudFormation stack...
+            </div>
+            <div class="code-line output success">
+              Stack created successfully!
+            </div>
+            <div class="code-line output">------------------------------</div>
+            <div class="code-line output">URL: http://13.229.x.x</div>
+            <div class="code-line output">Admin: admin / admin123</div>
+            <div class="code-line output">------------------------------</div>
+            <div class="code-line">
+              <span class="prompt">PS C:\></span> <span class="blink">_</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <section id="features" class="features">
+      <div class="container">
+        <h2>Why Use This Template?</h2>
+        <div class="feature-grid">
+          <div class="feature-card">
+            <div class="icon">🚀</div>
+            <h3>One-Click Deploy</h3>
+            <p>
+              Launch a full Odoo stack in under 10 minutes using native AWS
+              CloudFormation infrastructure as code.
+            </p>
+          </div>
+          <div class="feature-card">
+            <div class="icon">🔒</div>
+            <h3>Secure by Default</h3>
+            <p>
+              Pre-configured security groups, Nginx reverse proxy with headers,
+              and list_db=False protection.
+            </p>
+          </div>
+          <div class="feature-card">
+            <div class="icon">💻</div>
+            <h3>Cross-Platform</h3>
+            <p>
+              Native PowerShell scripts for Windows users. No WSL required.
+              Works seamlessly on Linux/macOS too.
+            </p>
+          </div>
+          <div class="feature-card">
+            <div class="icon">⚡</div>
+            <h3>Performance Tuned</h3>
+            <p>
+              Optimized Nginx configuration (gzip, caching, timeouts) and
+              PostgreSQL tuning out of the box.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="quickstart" class="quickstart">
+      <div class="container">
+        <h2>Start Deploying</h2>
+        <div class="steps">
+          <div class="step">
+            <div class="step-number">1</div>
+            <div class="step-content">
+              <h3>Clone Repository</h3>
+              <pre><code>git clone https://github.com/ihatesea69/odoo-community-aws-deployment.git
+cd odoo-community-aws-deployment</code></pre>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-number">2</div>
+            <div class="step-content">
+              <h3>Run Deploy Script</h3>
+              <pre><code>.\scripts\deploy.ps1 -Name my-odoo -KeyPair my-key</code></pre>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-number">3</div>
+            <div class="step-content">
+              <h3>Access Odoo</h3>
+              <p>Wait 5-10 mins, then visit the URL provided in the output.</p>
+              <p><strong>Login:</strong> admin / admin123</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div class="container">
+        <p>
+          © 2024 Odoo AWS Deployment Project. Open Source under MIT License.
+        </p>
+        <div class="footer-links">
+          <a href="https://github.com/ihatesea69/odoo-community-aws-deployment"
+            >GitHub</a
+          >
+          <a
+            href="https://github.com/ihatesea69/odoo-community-aws-deployment/issues"
+            >Issues</a
+          >
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

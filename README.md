@@ -1,5 +1,10 @@
 # Odoo Community 18 AWS Deployment Infrastructure
 
+[![Project Website](https://img.shields.io/badge/Project-Website-714B67?style=for-the-badge&logo=google-chrome&logoColor=white)](https://ihatesea69.github.io/odoo-community-aws-deployment/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+## 🌐 [Visit Project Website](https://ihatesea69.github.io/odoo-community-aws-deployment/)
+
 ![Odoo AWS Infrastructure](./assets/odoo-aws-banner.svg)
 
 A production-ready infrastructure automation solution for deploying Odoo Community Edition 18 on Amazon Web Services (AWS) EC2 using CloudFormation. This project provides a complete Infrastructure as Code (IaC) approach with automated installation scripts, monitoring tools, and cost optimization strategies.
