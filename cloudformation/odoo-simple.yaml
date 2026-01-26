@@ -273,6 +273,10 @@ Resources:
           echo "Khởi tạo Odoo database..."
           sudo -u odoo /usr/bin/python3 /opt/odoo/odoo-bin -c /etc/odoo.conf -d odoo18 -i base --stop-after-init
 
+          # Set password cho admin user (ID 2)
+          echo "Đặt mật khẩu admin..."
+          sudo -u odoo /usr/bin/python3 /opt/odoo/odoo-bin shell -c /etc/odoo.conf -d odoo18 --no-http --stop-after-init <<< "env['res.users'].browse(2).write({'login': 'admin', 'password': 'admin123'}); env.cr.commit()"
+
           # Start Odoo service
           systemctl start odoo
 
